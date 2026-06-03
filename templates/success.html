@@ -43,8 +43,6 @@
                         <li class="mb-2"><strong>🏠 Дом:</strong> №${all.home_id}</li>
                         <li class="mb-2"><strong>📅 Даты:</strong> ${all.check_in} – ${all.check_out}</li>
                         <li class="mb-2"><strong>👥 Гостей:</strong> ${all.peoples}</li>
-                        <li class="mb-2"><strong>🍷 Мини-бар:</strong> ${'Да' if all.mini_bar else 'Нет'}</li>
-                        <li class="mb-2"><strong>🚗 Трансфер:</strong> ${'Да' if all.transfer else 'Нет'}</li>
                         <li class="mb-2"><strong>💰 Сумма:</strong> <span class="text-success fw-bold">${all.total_price} ₽</span></li>
                         <li class="mb-2"><strong>📌 Статус:</strong> <span class="badge bg-info">${all.status}</span></li>
                     </ul>
@@ -58,7 +56,7 @@
 </div>
 
 % else:
-<!-- Если заказ не найден (старая версия) -->
+<!-- Если заказ не найден -->
 <div class="container d-flex align-items-center justify-content-center min-vh-100">
     <div class="col-12 col-md-6">
         <div class="success-card">

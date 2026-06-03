@@ -29,9 +29,9 @@ template_lookup = TemplateLookup(directories=["templates"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 homes = [
-    {"id": 1, "price_per_day": 6000, "distance_to_lift": 300, "rooms": 4, "pool": False,
+    {"id": 1, "price_per_day": 1500, "distance_to_lift": 300, "rooms": 4, "pool": False,
      "img": "/static/img/home1.png",
-     "img_room": ["/static/img/home1.png", "/static/img/img_1.png", "/static/img/img_2.png", "/static/img/img_3.png", "/static/img/img_4.png", "/static/img/img_5.png", "/static/img/img_6.png", "/static/img/img_7.png", "/static/img/img_8.png", "/static/img/img_9.png","/static/img/home10.png", "/static/img/img_11.png", "/static/img/img_12.png", "/static/img/img_13.png", "/static/img/img_14.png", "/static/img/img_15.png", "/static/img/img_16.png"],
+     "img_room": ["/static/img/home1.png", "/static/img/img_1.png", "/static/img/img_2.png", "/static/img/img_3.png", "/static/img/img_4.png", "/static/img/img_5.png", "/static/img/img_6.png", "/static/img/img_7.png", "/static/img/img_8.png", "/static/img/img_9.png","/static/img/img_10.png", "/static/img/img_11.png", "/static/img/img_12.png", "/static/img/img_13.png", "/static/img/img_14.png", "/static/img/img_15.png", "/static/img/img_16.png"],
      "tv": True, "wifi": True, "batut": False, "rating": 5},
 
 ]
@@ -52,8 +52,9 @@ def create_form(
     mini_bar: bool = Form(False),
     transfer: bool = Form(False),
     peoples: str = Form(...),
-    ski: bool = Form(False),
-    sauna: bool = Form(False),
+    early_checkin: bool = Form(False),
+    late_checkout: bool = Form(False),
+    parking: bool = Form(False),
     db: Session = Depends(get_db)
 ):
     days = (check_out - check_in).days
@@ -71,10 +72,12 @@ def create_form(
         price += 4000
     if transfer:
         price += 1500
-    if ski:
-        price += 1500
-    if sauna:
-        price += 2000
+    if early_checkin:
+        price += 1000
+    if late_checkout:
+        price += 1000
+    if parking:
+        price += 500
     booking = Booking(
         home_id=home_id,
         check_in=check_in,
@@ -89,7 +92,12 @@ def create_form(
     )
     db.add(booking)
     db.commit()
-    message = f"Новый заказ!\nДом №{home_id}\nИмя: {name}\nТелефон: {phone}\nДаты: {check_in} – {check_out}\nГостей: {peoples}\nСумма: {price}₽"
+    addons = []
+    if early_checkin: addons.append("🌅 Ранний заезд")
+    if late_checkout: addons.append("🌙 Поздний выезд")
+    if parking: addons.append("🅿️ Парковка")
+    addons_str = ", ".join(addons) if addons else "нет"
+    message = f"Новый заказ!\nДом №{home_id}\nИмя: {name}\nТелефон: {phone}\nДаты: {check_in} – {check_out}\nГостей: {peoples}\nДоп. услуги: {addons_str}\nСумма: {price}₽"
     RostovHomes(message)
     return RedirectResponse(url=f"/success?booking_id={booking.id}", status_code=303)
 
@@ -121,7 +129,7 @@ def RostovHomes(message):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     data = {"chat_id": chat_id, "text": message}
     try:
-        requests.post(url, json=data, timeout=5, proxies={"http": None, "https": None})
+        requests.post(url, json=data, timeout=10, proxies={"http": None, "https": None})
     except Exception as e:
         print(f"Ошибка отправки в Telegram: {e}")
 
