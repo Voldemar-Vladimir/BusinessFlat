@@ -43,6 +43,9 @@
                         <li class="mb-2"><strong>🏠 Дом:</strong> №${all.home_id}</li>
                         <li class="mb-2"><strong>📅 Даты:</strong> ${all.check_in} – ${all.check_out}</li>
                         <li class="mb-2"><strong>👥 Гостей:</strong> ${all.peoples}</li>
+                        <li class="mb-2"><strong>🌅 Ранний заезд:</strong> ${'Да' if all.early_checkin else 'Нет'}</li>
+                        <li class="mb-2"><strong>🌙 Поздний выезд:</strong> ${'Да' if all.late_checkout else 'Нет'}</li>
+                        <li class="mb-2"><strong>🅿️ Парковка:</strong> ${'Да' if all.parking else 'Нет'}</li>
                         <li class="mb-2"><strong>💰 Сумма:</strong> <span class="text-success fw-bold">${all.total_price} ₽</span></li>
                         <li class="mb-2"><strong>📌 Статус:</strong> <span class="badge bg-info">${all.status}</span></li>
                     </ul>
