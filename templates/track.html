@@ -23,8 +23,9 @@
                     <li><strong>📞 Телефон:</strong> ${all.phone}</li>
                     <li><strong>📅 Даты:</strong> ${all.check_in} – ${all.check_out}</li>
                     <li><strong>👥 Гостей:</strong> ${all.peoples}</li>
-                    <li><strong>🍷 Мини-бар:</strong> ${'Да' if all.mini_bar else 'Нет'}</li>
-                    <li><strong>🚗 Трансфер:</strong> ${'Да' if all.transfer else 'Нет'}</li>
+                    <li><strong>🌅 Ранний заезд:</strong> ${'Да' if all.early_checkin else 'Нет'}</li>
+                    <li><strong>🌙 Поздний выезд:</strong> ${'Да' if all.late_checkout else 'Нет'}</li>
+                    <li><strong>🅿️ Парковка:</strong> ${'Да' if all.parking else 'Нет'}</li>
                     <li><strong>💰 Сумма:</strong> <span class="text-success fw-bold">${all.total_price} ₽</span></li>
                     <li><strong>📌 Статус:</strong>
                         % if all.status == 'confirmed':

@@ -22,8 +22,9 @@
                         <th>Заезд</th>
                         <th>Выезд</th>
                         <th>Гостей</th>
-                        <th>Мини-бар</th>
-                        <th>Трансфер</th>
+                        <th>Ранний заезд</th>
+                        <th>Поздний выезд</th>
+                        <th>Парковка</th>
                         <th>Сумма</th>
                         <th>Статус</th>
                         <th>Действия</th>
@@ -31,25 +32,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    % for b in bookings:
+                    % for d in bookings:
                     <tr>
-                        <td>${b.id}</td>
-                        <td>${b.home_id}</td>
-                        <td>${b.name}</td>
-                        <td>${b.phone}</td>
-                        <td>${b.email or '—'}</td>
-                        <td>${b.check_in}</td>
-                        <td>${b.check_out}</td>
-                        <td>${b.peoples}</td>
-                        <td>${'✅' if b.mini_bar else '❌'}</td>
-                        <td>${'✅' if b.transfer else '❌'}</td>
-                        <td><strong>${b.total_price} ₽</strong></td>
-                        <td>${b.status}</td>
+                        <td>${d.id}</td>
+                        <td>${d.home_id}</td>
+                        <td>${d.name}</td>
+                        <td>${d.phone}</td>
+                        <td>${d.email or '—'}</td>
+                        <td>${d.check_in}</td>
+                        <td>${d.check_out}</td>
+                        <td>${d.peoples}</td>
+                        <td>${'✅' if d.early_checkin else '❌'}</td>
+                        <td>${'✅' if d.late_checkout else '❌'}</td>
+                        <td>${'✅' if d.parking else '❌'}</td>
+                        <td><strong>${d.total_price} ₽</strong></td>
+                        <td>${d.status}</td>
                         <td>
-                            <a href="/admin/${password}/confirm/${b.id}" class="btn btn-success btn-sm me-1" title="Подтвердить">✅</a>
-                            <a href="/admin/${password}/cancel/${b.id}" class="btn btn-danger btn-sm" title="Отменить">❌</a>
+                            <a href="/admin/${password}/confirm/${d.id}" class="btn btn-success btn-sm me-1" title="Подтвердить">✅</a>
+                            <a href="/admin/${password}/cancel/${d.id}" class="btn btn-danger btn-sm" title="Отменить">❌</a>
                         </td>
-                        <td>${b.created_at.strftime('%d.%m.%Y %H:%M')}</td>
+                        <td>${d.created_at.strftime('%d.%m.%Y %H:%M')}</td>
                     </tr>
                     % endfor
                 </tbody>

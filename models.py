@@ -15,12 +15,12 @@ class Booking(Base):
     name = Column(String)
     phone = Column(String)
     email = Column(String)
-    mini_bar = Column(Boolean, default=False)
-    transfer = Column(Boolean, default=False)
+    early_checkin = Column(Boolean, default=False)
+    late_checkout = Column(Boolean, default=False)
+    parking = Column(Boolean, default=False)
     total_price = Column(Integer)
     status = Column(String, default='new')
     created_at = Column(DateTime, default=datetime.utcnow)
     peoples = Column(String)
-
 
 Base.metadata.create_all(bind=engine)

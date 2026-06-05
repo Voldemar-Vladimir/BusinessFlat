@@ -13,8 +13,6 @@ import requests
 from Admin_Info import token,chat_id,secret
 
 secret_key = secret()
-toke=token()
-chat_id=chat_id()
 security = HTTPBasic()
 
 def get_db():
@@ -49,8 +47,6 @@ def create_form(
     name: str = Form(...),
     phone: str = Form(...),
     email: str = Form(""),
-    mini_bar: bool = Form(False),
-    transfer: bool = Form(False),
     peoples: str = Form(...),
     early_checkin: bool = Form(False),
     late_checkout: bool = Form(False),
@@ -68,10 +64,6 @@ def create_form(
         raise HTTPException(404, "Дом не найден")
 
     price = home["price_per_day"] * days
-    if mini_bar:
-        price += 4000
-    if transfer:
-        price += 1500
     if early_checkin:
         price += 1000
     if late_checkout:
@@ -85,8 +77,9 @@ def create_form(
         name=name,
         phone=phone,
         email=email,
-        mini_bar=mini_bar,
-        transfer=transfer,
+        early_checkin=early_checkin,
+        late_checkout=late_checkout,
+        parking=parking,
         total_price=price,
         peoples=peoples
     )
