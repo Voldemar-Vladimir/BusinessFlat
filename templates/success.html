@@ -46,9 +46,34 @@
                         <li class="mb-2"><strong>🌅 Ранний заезд:</strong> ${'Да' if all.early_checkin else 'Нет'}</li>
                         <li class="mb-2"><strong>🌙 Поздний выезд:</strong> ${'Да' if all.late_checkout else 'Нет'}</li>
                         <li class="mb-2"><strong>🅿️ Парковка:</strong> ${'Да' if all.parking else 'Нет'}</li>
-                        <li class="mb-2"><strong>💰 Сумма:</strong> <span class="text-success fw-bold">${all.total_price} ₽</span></li>
-                        <li class="mb-2"><strong>📌 Статус:</strong> <span class="badge bg-info">${all.status}</span></li>
+                        <li class="mb-2"><strong>💰 Полная стоимость:</strong> <span class="fw-bold">${all.total_price} ₽</span></li>
+                        <li class="mb-2"><strong>💳 Внесено предоплатой:</strong> <span class="text-success fw-bold">${all.prepaid_amount} ₽</span></li>
+                        <li class="mb-2"><strong>📌 Статус брони:</strong>
+                            <span class="badge ${'bg-success' if all.status == 'confirmed' else 'bg-warning'}">
+                                ${'Подтверждена' if all.status == 'confirmed' else 'Ожидает предоплаты'}
+                            </span>
+                        </li>
+                        <li class="mb-2"><strong>💳 Статус оплаты:</strong>
+                            <span class="badge ${'bg-success' if all.payment_status == 'paid' else 'bg-secondary'}">
+                                ${'Предоплата внесена' if all.payment_status == 'paid' else 'Не оплачено'}
+                            </span>
+                        </li>
                     </ul>
+
+                    <!-- Блок оплаты: показываем кнопку только если предоплата не внесена -->
+                    % if all.payment_status != 'paid':
+                    <div class="alert alert-warning mt-3">
+                        ⚠️ Для подтверждения бронирования и закрепления дат необходимо внести предоплату 600 ₽.
+                    </div>
+                    <a href="/fake_pay/${all.id}" class="btn btn-success w-100 rounded-pill py-2 mb-3">
+                        💳 Внести предоплату 600 ₽
+                    </a>
+                    % else:
+                    <div class="alert alert-success mt-3">
+                        ✅ Предоплата получена! Бронь подтверждена, даты закреплены за вами.
+                    </div>
+                    % endif
+
                     <a href="/" class="btn btn-primary rounded-pill px-4">
                         <i class="bi bi-house-door"></i> На главную
                     </a>

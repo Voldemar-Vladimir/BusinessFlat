@@ -56,22 +56,62 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
 <script>
+    const homeId = ${home_id};
+    const pricePerDay = ${price_per_day};
+    let check_out_picker = null;
+
     function calculateTotal() {
         let checkIn = document.getElementById('check_in').value;
         let checkOut = document.getElementById('check_out').value;
-        let pricePerDay = parseInt('${price_per_day}');
         let days = 0;
-        if (checkIn && checkOut) { let dateIn = new Date(checkIn); let dateOut = new Date(checkOut); if (dateOut > dateIn) { days = Math.floor((dateOut - dateIn) / (1000 * 60 * 60 * 24)); } }
+        if (checkIn && checkOut) {
+            let dateIn = new Date(checkIn);
+            let dateOut = new Date(checkOut);
+            if (dateOut > dateIn) days = Math.floor((dateOut - dateIn) / (86400000));
+        }
         let total = days * pricePerDay;
-        document.querySelectorAll('.service:checked').forEach(cb => { total += parseInt(cb.getAttribute('data-price')); });
+        document.querySelectorAll('.service:checked').forEach(cb => {
+            total += parseInt(cb.getAttribute('data-price'));
+        });
         document.getElementById('totalPrice').innerText = total > 0 ? total : 0;
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("#check_in", { locale: "ru", dateFormat: "Y-m-d", minDate: "today", onChange: function(selectedDates, dateStr, instance) { if (check_out_flatpickr) check_out_flatpickr.set('minDate', dateStr); calculateTotal(); } });
-        let check_out_flatpickr = flatpickr("#check_out", { locale: "ru", dateFormat: "Y-m-d", minDate: "today", onChange: calculateTotal });
-        document.querySelectorAll('.service').forEach(cb => cb.addEventListener('change', calculateTotal));
-        calculateTotal();
-    });
+
+    fetch('/api/blocked_dates/' + homeId)
+        .then(response => response.json())
+        .then(data => {
+            const blockedDates = data.blocked;
+            const commonConfig = {
+                locale: "ru",
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                disable: blockedDates
+            };
+            flatpickr("#check_in", {
+                ...commonConfig,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (check_out_picker) check_out_picker.set('minDate', dateStr);
+                    calculateTotal();
+                }
+            });
+            check_out_picker = flatpickr("#check_out", {
+                ...commonConfig,
+                onChange: calculateTotal
+            });
+            document.querySelectorAll('.service').forEach(cb => cb.addEventListener('change', calculateTotal));
+            calculateTotal();
+        })
+        .catch(err => {
+            console.error('Ошибка загрузки занятых дат:', err);
+            // Запасной вариант
+            const fallback = { locale: "ru", dateFormat: "Y-m-d", minDate: "today", disable: [] };
+            flatpickr("#check_in", {
+                ...fallback,
+                onChange: function(selectedDates, dateStr) { if (check_out_picker) check_out_picker.set('minDate', dateStr); calculateTotal(); }
+            });
+            check_out_picker = flatpickr("#check_out", { ...fallback, onChange: calculateTotal });
+            document.querySelectorAll('.service').forEach(cb => cb.addEventListener('change', calculateTotal));
+            calculateTotal();
+        });
 </script>
 </body>
 </html>
